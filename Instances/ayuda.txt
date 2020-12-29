@@ -1,0 +1,28 @@
+Recordar que son 4 semanas para programar
+Un paciente solo puede tener una sesión al día
+
+Formato de entrada:
+
+Nmaquinas NDoctores Npacientes
+------- lista de disponibilidad de los doctores
+0: no asiste ese día
+1: doctor realiza el turno diurno (09:00-13:00)
+2: doctor realiza el turno de la tarde (14:00-18:00)
+3: doctor realiza ambos turnos
+Ejemplos: 
+1 0 2 3 1
+2 2 1 1 0
+-------------------
+NpacR NpacP NpacU
+
+
+
+Formatos de salida:
+
+1.- Paciente-doctor:
+Filas: pacientes
+Columnas: bloques del día, por lo tanto serán 16 bloques diarios (16*4*5), mostrando el doctor que atiende
+
+2.- Paciente-máquina:
+Filas: pacientes
+Columnas: bloques del día mostrando el número de la máquina utilizada
