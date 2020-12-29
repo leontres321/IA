@@ -1,5 +1,16 @@
-Recordar que son 4 semanas para programar
-Un paciente solo puede tener una sesión al día
+Recordar:
+Son 4 semanas de 5 dias para programar
+Un paciente solo puede tener una sesión al día con un doc y una maquina
+Los pacientes radicales no pueden comenzar su tratamiento los viernes.
+Tiempos de espera:
+	14 < Radicales < 28
+	2  < Paliativos< 14
+	1  < Urgentes  < 2
+
+Cantidad de sesiones:
+	Radicales:  30
+	Paliativos: 4
+	Urgentes:	2
 
 Formato de entrada:
 

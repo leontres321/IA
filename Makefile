@@ -1,7 +1,7 @@
 CC =g++
 FLAGS =-Wall
 
-FILES =main.o doctores.o
+FILES =main.o doctores.o pacientes.o
 BINARY =out
 
 all: $(BINARY)
@@ -15,7 +15,8 @@ main.o: main.cpp
 doctores.o: doctores.cpp
 	$(CC) $(FLAGS) -c doctores.cpp
 
-
+pacientes.o: pacientes.cpp
+	$(CC) $(FLAGS) -c pacientes.cpp
 
 clean:
 	rm $(BINARY) $(FILES)

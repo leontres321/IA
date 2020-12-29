@@ -2,16 +2,24 @@
 #include <fstream>
 
 #include "doctores.h"
+#include "pacientes.h"
+#include "helpers.h"
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
+
+
     int totalMaquinas, totalDoctores, totalPacientes;
     int pacientesR, pacientesP, pacientesU;
 
-    int idDoctores = 0;
+    int idDoctores = 1;
+    int idMaquinas = 1;
 
     doc* listaDoctores;
+    paciente* listaRadical;
+    paciente* listaPaliativa;
+    paciente* listaUrgente;
 
     if (argc < 2){
         cout << "**********" << endl;
@@ -36,15 +44,27 @@ int main(int argc, char *argv[]) {
         }
         
         input >> pacientesR >> pacientesP >> pacientesU;
+
+        listaRadical = new paciente[pacientesR];
+        listaPaliativa = new paciente[pacientesP];
+        listaUrgente = new paciente[pacientesU];
+
+        initListaPacientes(listaRadical, pacientesR);
+        initListaPacientes(listaPaliativa, pacientesP);
+        initListaPacientes(listaUrgente, pacientesU);
     }
     else{
         input.close();
         exit(1);
     }
 
+    cout << "TEST: " << listaRadical[0].horarioDoc[1] << endl;
+
+    //Comenzar algoritmo
+
 
     //Limpieza
     input.close();
-    delete listaDoctores;
+    limpiar (listaDoctores, listaRadical, listaPaliativa, listaUrgente);
     return 0;
 }

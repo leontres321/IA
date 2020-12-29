@@ -1,3 +1,6 @@
+#ifndef DOCTORES
+#define DOCTORES
+
 class doc{
     public:
         int id;
@@ -5,3 +8,5 @@ class doc{
 
     void initDoc(int listaHorario[5], int idNuevo);
 };
+
+#endif
