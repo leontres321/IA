@@ -1,5 +1,4 @@
-#ifndef DOCTORES
-#define DOCTORES
+#pragma once
 
 class doc{
     public:
@@ -8,5 +7,3 @@ class doc{
 
     void initDoc(int listaHorario[5], int idNuevo);
 };
-
-#endif

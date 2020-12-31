@@ -9,6 +9,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
+    helper help = helper();
 
     int totalMaquinas, totalDoctores, totalPacientes;
     int pacientesR, pacientesP, pacientesU;
@@ -49,22 +50,20 @@ int main(int argc, char *argv[]) {
         listaPaliativa = new paciente[pacientesP];
         listaUrgente = new paciente[pacientesU];
 
-        initListaPacientes(listaRadical, pacientesR);
-        initListaPacientes(listaPaliativa, pacientesP);
-        initListaPacientes(listaUrgente, pacientesU);
+        help.initListaPacientes(listaRadical, pacientesR);
+        help.initListaPacientes(listaPaliativa, pacientesP);
+        help.initListaPacientes(listaUrgente, pacientesU);
     }
     else{
         input.close();
         exit(1);
     }
 
-    cout << "TEST: " << listaRadical[0].horarioDoc[1] << endl;
-
     //Comenzar algoritmo
-
+    help.BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente);
 
     //Limpieza
     input.close();
-    limpiar (listaDoctores, listaRadical, listaPaliativa, listaUrgente);
+    help.limpiar (listaDoctores, listaRadical, listaPaliativa, listaUrgente);
     return 0;
 }
