@@ -15,7 +15,6 @@ int main(int argc, char *argv[]) {
     int pacientesR, pacientesP, pacientesU;
 
     int idDoctores = 1;
-    int idMaquinas = 1;
 
     doc* listaDoctores;
     paciente* listaRadical;
@@ -59,8 +58,11 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    help.initListasInternas(pacientesU, pacientesP, pacientesR);
     //Comenzar algoritmo
-    help.BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente);
+    help.BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente,
+            totalDoctores, pacientesR, pacientesP, pacientesU, totalMaquinas,
+            0, 0, 0);
 
     //Limpieza
     input.close();
