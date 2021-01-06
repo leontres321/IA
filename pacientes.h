@@ -1,12 +1,13 @@
 #pragma once
+#include <vector>
 
 class paciente{
     public:
-        int inicioSesiones; //Para restriccion de viernes a pacientes radicales.
         int cantidadSesionesActuales; 
         int tiempoEspera;
-        int tiempoEsperaMAX;
+        int tiempoEsperaPrimera;
 
+        std::vector<int> pilaEsperas;
 
         //Esto podría ser disminuido a un total de 60 ints pero y a mi que? (5.1kb por paciente)
         int horarioDoc[320];

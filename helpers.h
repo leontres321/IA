@@ -2,6 +2,7 @@
 
 #include "pacientes.h"
 #include "doctores.h"
+#include <vector>
 
 class helper{
     //Podria ser lista pero queria ponerlo más obvio, podria haber hecho un enum tambien
@@ -16,24 +17,38 @@ class helper{
     int sesionesP = 4;
     int sesionesU = 2;
 
-    //Esto es para minimizar tiempos de espera y maximizar cantidad de sesiones
-    paciente* listaU;
-    paciente* listaP;
-    paciente* listaR;
+    int esperaAntigua = 0;
+    int sesionesAntigua = 0;
 
     void pasarDia(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
                      paciente* listaRadical, int bloqueActual);
+
+    void regresarDia(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
+                     paciente* listaRadical, int bloqueActual);
+            
     int buscarDoc(int bloque, int totalDoctores, doc* listaDoctores, 
                         int pacientesU, paciente* listaUrgente,
                         int pacientesP, paciente* listaPaliativa,
                         int pacientesR, paciente* listaRadical);
+
     void escribir(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa,
                   int pacientesR, paciente* listaRadical);
 
-    bool minTiempoEspera();
+    int encontrarOtroPaciente(int cantidadPacientes, paciente* listaPaciente, std::vector<int> &excluidos, int typo, int bloqueActual);
+    void devolverHora(paciente* listaPacientes, int iterador, int bloqueActual, std::vector<int> &exclusiones);
+    bool revisarDiasMaximos(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
+                     paciente* listaRadical);
+
+    void pasarBloque(int pacienteU, paciente* listaUrgente, int pacienteP, paciente* listaPaliativa, int pacienteR, paciente* listaRadical);
+    void devolverBloque(int pacienteU, paciente* listaUrgente, int pacienteP, paciente* listaPaliativa, int pacienteR, paciente* listaRadical);
+
+    void copiarLista(int cantidad, paciente* listaOriginal, paciente* listaCopiada);
 
     public:
-
+        //Esto es para minimizar tiempos de espera y maximizar cantidad de sesiones
+        paciente* listaU;
+        paciente* listaP;
+        paciente* listaR;
         void initListaPacientes(paciente* lista, int largo);
         void initListasInternas(int pacientesU, int pacientesP, int pacientesR);
         void limpiar(doc* listaDoctores, paciente* listaRadical, paciente* listaPaliativa, paciente* listaUrgente);

@@ -1,11 +1,17 @@
 #include <iostream>
 #include <fstream>
+#include <signal.h>
 
 #include "doctores.h"
 #include "pacientes.h"
 #include "helpers.h"
 
 using namespace std;
+
+void terminar(int s){
+    
+    return;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -15,6 +21,8 @@ int main(int argc, char *argv[]) {
     int pacientesR, pacientesP, pacientesU;
 
     int idDoctores = 1;
+
+    signal (SIGINT,terminar);
 
     doc* listaDoctores;
     paciente* listaRadical;
@@ -31,7 +39,7 @@ int main(int argc, char *argv[]) {
     
     fstream input;
     input.open(argv[1], ios::in);
-
+    
     if (input.is_open()){
         input >> totalMaquinas >> totalDoctores >> totalPacientes;
 
@@ -46,8 +54,9 @@ int main(int argc, char *argv[]) {
         input >> pacientesR >> pacientesP >> pacientesU;
 
         listaRadical = new paciente[pacientesR];
-        listaPaliativa = new paciente[pacientesP];
         listaUrgente = new paciente[pacientesU];
+        listaPaliativa = new paciente[pacientesP];
+
 
         help.initListaPacientes(listaRadical, pacientesR);
         help.initListaPacientes(listaPaliativa, pacientesP);
@@ -63,9 +72,11 @@ int main(int argc, char *argv[]) {
     help.BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente,
             totalDoctores, pacientesR, pacientesP, pacientesU, totalMaquinas,
             0, 0, 0);
-
+    
     //Limpieza
     input.close();
+    
     help.limpiar (listaDoctores, listaRadical, listaPaliativa, listaUrgente);
     return 0;
 }
+
