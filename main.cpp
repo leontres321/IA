@@ -4,13 +4,14 @@
 
 #include "doctores.h"
 #include "pacientes.h"
-#include "helpers.h"
+#include "GBJ.h"
 
 using namespace std;
 
-helper help = helper();
+GBJ help = GBJ();
 int pacientesR, pacientesP, pacientesU;
 
+///Escribe a los archivos, ya se cuando termina todo o al precionar ctrl + c
 void terminar(int s){
     fstream salida1, salida2;
     salida1.open("doctores.txt", ios::out);
@@ -46,7 +47,7 @@ void terminar(int s){
     salida1.close();
     salida2.close();
 
-    cout << "Se genero los archivos requeridos" << endl;
+    cout << endl << "Se genero los archivos requeridos" << endl;
     exit(0);
 }
 
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
     if (argc < 2){
         cout << "**********" << endl;
         cout << "Para poder utilizar correctamente este ejecutable es necesario entregar un valor a CASE" << endl;
-        cout << "ejemplo: make run CASE=./Instances/Caso1" << endl;
+        cout << "ejemplo: make run CASE=Instances/Caso1" << endl;
         cout << "**********" << endl;
         exit(0);
     }

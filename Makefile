@@ -1,7 +1,7 @@
 CC =g++
 FLAGS =-Wall
 
-FILES =main.o doctores.o pacientes.o helpers.o
+FILES =main.o doctores.o pacientes.o GBJ.o
 OUTPUTS = doctores.txt maquinas.txt
 BINARY =out
 
@@ -19,8 +19,8 @@ doctores.o: doctores.cpp
 pacientes.o: pacientes.cpp
 	$(CC) $(FLAGS) -c pacientes.cpp
 
-helpers.o: helpers.cpp
-	$(CC) $(FLAGS) -c helpers.cpp
+GBJ.o: GBJ.cpp
+	$(CC) $(FLAGS) -c GBJ.cpp
 
 clean:
 	rm $(BINARY) $(FILES) $(OUTPUTS)

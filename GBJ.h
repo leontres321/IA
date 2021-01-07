@@ -4,7 +4,7 @@
 #include "doctores.h"
 #include <vector>
 
-class helper{
+class GBJ{
     //Podria ser lista pero queria ponerlo más obvio, podria haber hecho un enum tambien
     int minR = 14;
     int maxR = 28;
@@ -31,7 +31,7 @@ class helper{
                         int pacientesP, paciente* listaPaliativa,
                         int pacientesR, paciente* listaRadical);
 
-    void escribir(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa,
+    void solucion(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa,
                   int pacientesR, paciente* listaRadical);
 
     int encontrarOtroPaciente(int cantidadPacientes, paciente* listaPaciente, std::vector<int> &excluidos, int typo, int bloqueActual);

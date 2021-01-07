@@ -1,12 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "helpers.h"
+#include "GBJ.h"
 
 using namespace std;
 
 ///Borrar punteros de pacientes y doctores
-void helper::limpiar (doc* listaDoctores, paciente* listaRadical, paciente* listaPaliativa, paciente* listaUrgente){
+void GBJ::limpiar (doc* listaDoctores, paciente* listaRadical, paciente* listaPaliativa, paciente* listaUrgente){
     delete[] listaDoctores;
     delete[] listaRadical;
     delete[] listaPaliativa;
@@ -18,14 +18,14 @@ void helper::limpiar (doc* listaDoctores, paciente* listaRadical, paciente* list
 }
 
 ///Llamar initPaciente por cada persona en la lista
-void helper::initListaPacientes(paciente* lista, int largo){
+void GBJ::initListaPacientes(paciente* lista, int largo){
     for (int i = 0; i < largo; i++){
         lista[i].initPaciente();
     }
 }
 
 ///Busca iterador para doc, retorna el primer id que encuentre
-int helper::buscarDoc(int bloque, int totalDoctores, doc* listaDoctores,
+int GBJ::buscarDoc(int bloque, int totalDoctores, doc* listaDoctores,
                     int pacientesU, paciente* listaUrgente,
                     int pacientesP, paciente* listaPaliativa,
                     int pacientesR, paciente* listaRadical){
@@ -99,7 +99,7 @@ int helper::buscarDoc(int bloque, int totalDoctores, doc* listaDoctores,
 }
 
 ///Agrega tiempo de espera a todos los que no fueron atendidos en el bloque actual
-void helper::pasarDia(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
+void GBJ::pasarDia(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
                      paciente* listaRadical, int bloqueActual){
     //Primer loop revisa las personas, segundo loop revisa las sesiones del dia
     bool noAgendado;
@@ -153,7 +153,7 @@ void helper::pasarDia(int pacientesU, paciente* listaUrgente, int pacientesP, pa
 }
 
 ///Regresa los tiempos de espera que existian
-void helper::regresarDia(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
+void GBJ::regresarDia(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
                      paciente* listaRadical, int bloqueActual){
     bool noAgendado;
     for (int i = 0; i < pacientesU; i++){
@@ -206,7 +206,7 @@ void helper::regresarDia(int pacientesU, paciente* listaUrgente, int pacientesP,
 }
 
 ///Inicializa las listas internas... tantos for
-void helper::initListasInternas(int pacientesU, int pacientesP, int pacientesR){
+void GBJ::initListasInternas(int pacientesU, int pacientesP, int pacientesR){
     listaU = new paciente[pacientesU];
     listaP = new paciente[pacientesP];
     listaR = new paciente[pacientesR];
@@ -222,7 +222,7 @@ void helper::initListasInternas(int pacientesU, int pacientesP, int pacientesR){
     }
 }
 
-int helper::encontrarOtroPaciente(int cantidadPacientes, paciente* listaPaciente, vector<int> &excluidos, int typo, int bloqueActual){
+int GBJ::encontrarOtroPaciente(int cantidadPacientes, paciente* listaPaciente, vector<int> &excluidos, int typo, int bloqueActual){
     bool esViernes = false;
     int min, max, sesiones;
     
@@ -284,7 +284,7 @@ int helper::encontrarOtroPaciente(int cantidadPacientes, paciente* listaPaciente
     return -1;
 }
 
-void helper::devolverHora(paciente* listaPacientes, int iterador, int bloqueActual, vector<int> &exclusiones){
+void GBJ::devolverHora(paciente* listaPacientes, int iterador, int bloqueActual, vector<int> &exclusiones){
     //Quitar la sesion
     listaPacientes[iterador].horarioDoc[bloqueActual] = 0;
     listaPacientes[iterador].horarioMaq[bloqueActual] = 0;
@@ -294,7 +294,7 @@ void helper::devolverHora(paciente* listaPacientes, int iterador, int bloqueActu
     exclusiones.push_back(iterador);
 }
 
-bool helper::revisarDiasMaximos(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
+bool GBJ::revisarDiasMaximos(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
                      paciente* listaRadical){
         for (int i = 0; i < pacientesU; i++){
             if (listaUrgente[i].tiempoEspera > maxU){
@@ -314,18 +314,18 @@ bool helper::revisarDiasMaximos(int pacientesU, paciente* listaUrgente, int paci
         return false;
     }
 
-void helper::copiarLista(int cantidad, paciente* listaOriginal, paciente* listaCopiada){
+void GBJ::copiarLista(int cantidad, paciente* listaOriginal, paciente* listaCopiada){
     for (int i = 0; i < cantidad; i++){
         listaCopiada[i] = listaOriginal[i];
     }
 }
 
-void helper::escribir(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa,
+void GBJ::solucion(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa,
                   int pacientesR, paciente* listaRadical){
     int espera = 0;
     int sesiones = 0;
 
-    //Sumo todas las esperas de los pacientes
+    //Sumo todas las esperas y soluciones de los pacientes
     for (int i = 0; i < pacientesU; i++){
         espera += listaUrgente[i].tiempoEsperaPrimera;
         sesiones += listaUrgente[i].cantidadSesionesActuales;
@@ -340,8 +340,6 @@ void helper::escribir(int pacientesU, paciente* listaUrgente, int pacientesP, pa
         espera += listaRadical[i].tiempoEsperaPrimera;
         sesiones += listaRadical[i].cantidadSesionesActuales;
     }
-
-    cout << "espera: " << espera << " sesiones:" << sesiones << endl;
 
     //mejora total o parcial
     if ((espera < esperaAntigua && sesiones > sesionesAntigua) ||
@@ -358,7 +356,7 @@ void helper::escribir(int pacientesU, paciente* listaUrgente, int pacientesP, pa
 
 }
 
-void helper::pasarBloque(int pacienteU, paciente* listaUrgente, int pacienteP, paciente* listaPaliativa, int pacienteR, paciente* listaRadical){
+void GBJ::pasarBloque(int pacienteU, paciente* listaUrgente, int pacienteP, paciente* listaPaliativa, int pacienteR, paciente* listaRadical){
     for (int i = 0; i < pacienteU; i++){
         if (listaUrgente[i].cantidadSesionesActuales == 0){
             listaUrgente[i].tiempoEsperaPrimera++;
@@ -378,7 +376,7 @@ void helper::pasarBloque(int pacienteU, paciente* listaUrgente, int pacienteP, p
     }
 }
 
-void helper::devolverBloque(int pacienteU, paciente* listaUrgente, int pacienteP, paciente* listaPaliativa, int pacienteR, paciente* listaRadical){
+void GBJ::devolverBloque(int pacienteU, paciente* listaUrgente, int pacienteP, paciente* listaPaliativa, int pacienteR, paciente* listaRadical){
     for (int i = 0; i < pacienteU; i++){
         if (listaUrgente[i].cantidadSesionesActuales == 0){
             listaUrgente[i].tiempoEsperaPrimera--;
@@ -398,7 +396,7 @@ void helper::devolverBloque(int pacienteU, paciente* listaUrgente, int pacienteP
     }
 }
 
-void helper::BT(doc* listaDoctores, 
+void GBJ::BT(doc* listaDoctores, 
     paciente* listaRadical, 
     paciente* listaPaliativa, 
     paciente* listaUrgente,
@@ -422,9 +420,8 @@ void helper::BT(doc* listaDoctores,
 
     pasarBloque(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical);
 
-    //cout << "Entrando en bloque: " <<  bloqueActual << endl;
     if (bloqueActual == 320){
-        escribir(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical);
+        solucion(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical);
         return;
     }
     
