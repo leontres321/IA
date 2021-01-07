@@ -2,6 +2,7 @@ CC =g++
 FLAGS =-Wall
 
 FILES =main.o doctores.o pacientes.o helpers.o
+OUTPUTS = doctores.txt maquinas.txt
 BINARY =out
 
 all: $(BINARY)
@@ -22,7 +23,7 @@ helpers.o: helpers.cpp
 	$(CC) $(FLAGS) -c helpers.cpp
 
 clean:
-	rm $(BINARY) $(FILES)
+	rm $(BINARY) $(FILES) $(OUTPUTS)
 
 run:
 	@./out $(CASE)

@@ -8,18 +8,50 @@
 
 using namespace std;
 
+helper help = helper();
+int pacientesR, pacientesP, pacientesU;
+
 void terminar(int s){
-    
-    return;
+    fstream salida1, salida2;
+    salida1.open("doctores.txt", ios::out);
+    salida2.open("maquinas.txt", ios::out);
+
+    for (int i = 0; i < pacientesU; i++){
+        for (int j = 0; j < 320; j++){
+            salida1 << help.listaU[i].horarioDoc[j] << " ";
+            salida2 << help.listaU[i].horarioMaq[j] << " ";
+        }
+        salida1 << endl;
+        salida2 << endl;
+    }    
+
+    for (int i = 0; i < pacientesP; i++){
+        for (int j = 0; j < 320; j++){
+            salida1 << help.listaP[i].horarioDoc[j] << " ";
+            salida2 << help.listaP[i].horarioMaq[j] << " ";
+        }
+        salida1 << endl;
+        salida2 << endl;
+    }    
+
+    for (int i = 0; i < pacientesR; i++){
+        for (int j = 0; j < 320; j++){
+            salida1 << help.listaR[i].horarioDoc[j] << " ";
+            salida2 << help.listaR[i].horarioMaq[j] << " ";
+        }
+        salida1 << endl;
+        salida2 << endl;
+    }    
+
+    salida1.close();
+    salida2.close();
+
+    cout << "Se genero los archivos requeridos" << endl;
+    exit(0);
 }
 
 int main(int argc, char *argv[]) {
-
-    helper help = helper();
-
     int totalMaquinas, totalDoctores, totalPacientes;
-    int pacientesR, pacientesP, pacientesU;
-
     int idDoctores = 1;
 
     signal (SIGINT,terminar);
@@ -44,6 +76,8 @@ int main(int argc, char *argv[]) {
         input >> totalMaquinas >> totalDoctores >> totalPacientes;
 
         listaDoctores = new doc[totalDoctores];
+        //parche
+        totalMaquinas++;
 
         for (int i = 0; i < totalDoctores; i++){
             int l[5];
@@ -56,7 +90,6 @@ int main(int argc, char *argv[]) {
         listaRadical = new paciente[pacientesR];
         listaUrgente = new paciente[pacientesU];
         listaPaliativa = new paciente[pacientesP];
-
 
         help.initListaPacientes(listaRadical, pacientesR);
         help.initListaPacientes(listaPaliativa, pacientesP);
@@ -71,11 +104,13 @@ int main(int argc, char *argv[]) {
     //Comenzar algoritmo
     help.BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente,
             totalDoctores, pacientesR, pacientesP, pacientesU, totalMaquinas,
-            0, 0, 0);
+            0, 0, 1);
     
     //Limpieza
     input.close();
     
+    terminar(0);
+
     help.limpiar (listaDoctores, listaRadical, listaPaliativa, listaUrgente);
     return 0;
 }

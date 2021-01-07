@@ -24,7 +24,7 @@ void helper::initListaPacientes(paciente* lista, int largo){
     }
 }
 
-///Busca id doctor, retorna el primer id que encuentre
+///Busca iterador para doc, retorna el primer id que encuentre
 int helper::buscarDoc(int bloque, int totalDoctores, doc* listaDoctores,
                     int pacientesU, paciente* listaUrgente,
                     int pacientesP, paciente* listaPaliativa,
@@ -90,12 +90,12 @@ int helper::buscarDoc(int bloque, int totalDoctores, doc* listaDoctores,
             }
         }
         if (!usado){
-            return listaDoctores[i].id;       
+            return i;       
         }
     }
 
-    //Se reviso todos los doctores y ya estan ocupados (los id parten de 1)
-    return 0;
+    //Se reviso todos los doctores y ya estan ocupados 
+    return -1;
 }
 
 ///Agrega tiempo de espera a todos los que no fueron atendidos en el bloque actual
@@ -314,6 +314,12 @@ bool helper::revisarDiasMaximos(int pacientesU, paciente* listaUrgente, int paci
         return false;
     }
 
+void helper::copiarLista(int cantidad, paciente* listaOriginal, paciente* listaCopiada){
+    for (int i = 0; i < cantidad; i++){
+        listaCopiada[i] = listaOriginal[i];
+    }
+}
+
 void helper::escribir(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa,
                   int pacientesR, paciente* listaRadical){
     int espera = 0;
@@ -335,14 +341,21 @@ void helper::escribir(int pacientesU, paciente* listaUrgente, int pacientesP, pa
         sesiones += listaRadical[i].cantidadSesionesActuales;
     }
 
-    if (espera <= esperaAntigua && sesiones >= sesionesAntigua){
+    cout << "espera: " << espera << " sesiones:" << sesiones << endl;
+
+    //mejora total o parcial
+    if ((espera < esperaAntigua && sesiones > sesionesAntigua) ||
+        (espera < esperaAntigua && sesiones == sesionesAntigua) ||
+        (espera == esperaAntigua && sesiones > sesionesAntigua)){
+
         //Guardar nueva solucion
-        //escribirla en el archivo?
         esperaAntigua = espera;
         sesionesAntigua = sesiones;
+        copiarLista(pacientesU, listaUrgente, listaU);
+        copiarLista(pacientesP, listaPaliativa, listaP);
+        copiarLista(pacientesR, listaRadical, listaR);
     }
-    
-    //TODO: terminar esto pibe
+
 }
 
 void helper::pasarBloque(int pacienteU, paciente* listaUrgente, int pacienteP, paciente* listaPaliativa, int pacienteR, paciente* listaRadical){
@@ -434,7 +447,7 @@ void helper::BT(doc* listaDoctores,
     int iddoc = buscarDoc(bloqueActual, totalDoctores, listaDoctores, pacientesU,
                         listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical); 
     
-    if (iddoc == 0){
+    if (iddoc == -1){
     	siguienteBloque=true;
 	}
 	
@@ -445,7 +458,7 @@ void helper::BT(doc* listaDoctores,
 		}
 	
 	    BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente, totalDoctores, pacientesR, pacientesP,
-	    pacientesU, totalMaquinas, bloqueActual+1, 0, 0);
+	    pacientesU, totalMaquinas, bloqueActual+1, 0, 1);
     
     	if (pasoDia){
       		regresarDia(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical, bloqueActual);
@@ -457,8 +470,6 @@ void helper::BT(doc* listaDoctores,
     //Se busca la maquina?
     //No es necesario porque no se busca el id de la maquina, solo la cantidad
     //y como se reviso que maquinasUsadas < totalMaquinas entonces todo gud
-    //y con todo gud me refiero a que debo tener un id para el segundo archivo asi que 
-    //deberia tener un ++ en la llamada de BT
     //y con todo gud me refiero a que debo tener un id para el segundo archivo asi que 
     //deberia tener un ++ en la llamada de BT
 
@@ -573,7 +584,7 @@ void helper::BT(doc* listaDoctores,
 	}
 	
     BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente, totalDoctores, pacientesR, pacientesP,
-    pacientesU, totalMaquinas, bloqueActual+1, 0, 0);
+    pacientesU, totalMaquinas, bloqueActual+1, 0, 1);
     
     if (pasoDia){
         regresarDia(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical, bloqueActual);

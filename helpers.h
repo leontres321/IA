@@ -17,7 +17,7 @@ class helper{
     int sesionesP = 4;
     int sesionesU = 2;
 
-    int esperaAntigua = 0;
+    int esperaAntigua = INT32_MAX;
     int sesionesAntigua = 0;
 
     void pasarDia(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
