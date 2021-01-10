@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <signal.h>
+#include <sys/stat.h>
 
 #include "doctores.h"
 #include "pacientes.h"
@@ -14,8 +15,16 @@ int pacientesR, pacientesP, pacientesU;
 ///Escribe a los archivos, ya se cuando termina todo o al precionar ctrl + c
 void terminar(int s){
     fstream salida1, salida2;
-    salida1.open("doctores.txt", ios::out);
-    salida2.open("maquinas.txt", ios::out);
+    string name = "./OUT";
+    int status = mkdir(name.c_str(), 0777);
+
+    if (status != 0){
+        cout << "No se logro generar la carpeta para los archivos de salida, huyendo." << endl;
+        exit(3);
+    }
+
+    salida1.open("./OUT/doctores.txt", ios::out);
+    salida2.open("./OUT/maquinas.txt", ios::out);
 
     for (int i = 0; i < pacientesU; i++){
         for (int j = 0; j < 320; j++){
@@ -48,6 +57,8 @@ void terminar(int s){
     salida2.close();
 
     cout << endl << "Se genero los archivos requeridos" << endl;
+    cout << "Tiempo espera: " << help.esperaAntigua << endl;
+    cout << "Cantidad sesiones: " << help.sesionesAntigua << endl;
     exit(0);
 }
 
@@ -65,7 +76,8 @@ int main(int argc, char *argv[]) {
     if (argc < 2){
         cout << "**********" << endl;
         cout << "Para poder utilizar correctamente este ejecutable es necesario entregar un valor a CASE" << endl;
-        cout << "ejemplo: make run CASE=Instances/Caso1" << endl;
+        cout << "ejemplos: make run CASE=Instances/Caso1" << endl;
+        cout << "          ./out Instances/Caso1" << endl;
         cout << "**********" << endl;
         exit(0);
     }
@@ -105,7 +117,7 @@ int main(int argc, char *argv[]) {
     //Comenzar algoritmo
     help.BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente,
             totalDoctores, pacientesR, pacientesP, pacientesU, totalMaquinas,
-            0, 0, 1);
+            0, -1, 0, 1);
     
     //Limpieza
     input.close();

@@ -1,0 +1,13 @@
+*******Compilación*******
+Ejecutar make
+
+*******Ejecución*********
+- make run CASE=path_archivo
+- Los archivos de salida se generan en la carpeta raiz
+
+*******Limpieza**********
+- make clean:  elimina archivos de compilación (*.o)
+- make delete: elimina los archivos de salida  (doctores.txt y maquinas.txt)
+
+Si el algoritmo toma demaciado tiempo se puede detener y este entregará el mejor resultado hasta el momento, si no ha encontrado solución alguna
+entonces simplemente imprimirá ceros.

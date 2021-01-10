@@ -222,7 +222,7 @@ void GBJ::initListasInternas(int pacientesU, int pacientesP, int pacientesR){
     }
 }
 
-int GBJ::encontrarOtroPaciente(int cantidadPacientes, paciente* listaPaciente, vector<int> &excluidos, int typo, int bloqueActual){
+int GBJ::encontrarPaciente(int cantidadPacientes, paciente* listaPaciente, vector<int> &excluidos, int typo, int bloqueActual){
     bool esViernes = false;
     int min, max, sesiones;
     
@@ -253,6 +253,11 @@ int GBJ::encontrarOtroPaciente(int cantidadPacientes, paciente* listaPaciente, v
     for (int i = 0; i < cantidadPacientes; i++){
         bool excluido = false;
         
+        
+        if (listaPaciente[i].cantidadSesionesActuales == 0){
+            return i;
+        }
+
         //RESTRICCION: los pacientes no pueden agendar más sesiones de las que requieren
         //RESTRICCION: los pacientes tienen un tiempo min y max para los tiempos de espera
         if (listaPaciente[i].cantidadSesionesActuales < sesiones && listaPaciente[i].tiempoEspera >= min && 
@@ -401,7 +406,7 @@ void GBJ::BT(doc* listaDoctores,
     paciente* listaPaliativa, 
     paciente* listaUrgente,
     int totalDoctores, int pacientesR, int pacientesP, int pacientesU, int totalMaquinas,
-    int bloqueActual, int doctoresUsados, int maquinasUsadas){
+    int bloqueActual, int bloqueAnterior, int doctoresUsados, int primeraMaquina){
 
     //Variables auxiliares
     bool yaAgendo = false;
@@ -418,7 +423,9 @@ void GBJ::BT(doc* listaDoctores,
     vector<int> exclusionP; 
     vector<int> exclusionR; 
 
-    pasarBloque(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical);
+    if (bloqueActual != bloqueAnterior){
+        pasarBloque(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical);
+    }
 
     if (bloqueActual == 320){
         solucion(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical);
@@ -436,7 +443,7 @@ void GBJ::BT(doc* listaDoctores,
 
     //Si no existen más doctores o maquinas entonces no se puede atender nadie más en ese bloque
     //deberia pasarse al siguiente bloque y resetear los doctores usados y maquinas usadas
-    if (doctoresUsados == totalDoctores || maquinasUsadas == totalMaquinas){
+    if (doctoresUsados == totalDoctores || primeraMaquina == totalMaquinas){
 	    siguienteBloque=true;            
     }
 
@@ -455,23 +462,23 @@ void GBJ::BT(doc* listaDoctores,
 		}
 	
 	    BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente, totalDoctores, pacientesR, pacientesP,
-	    pacientesU, totalMaquinas, bloqueActual+1, 0, 1);
+	    pacientesU, totalMaquinas, bloqueActual+1, bloqueActual, 0, 1);
     
     	if (pasoDia){
       		regresarDia(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical, bloqueActual);
     	}
         
         devolverBloque(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical);
-    	return;
+    	return; 
 	}
     //Se busca la maquina?
     //No es necesario porque no se busca el id de la maquina, solo la cantidad
-    //y como se reviso que maquinasUsadas < totalMaquinas entonces todo gud
+    //y como se reviso que primeraMaquina < totalMaquinas entonces todo gud
     //y con todo gud me refiero a que debo tener un id para el segundo archivo asi que 
     //deberia tener un ++ en la llamada de BT
 
     //Primero se revisan los urgentes ya que tienen menos tiempo de espera
-    iterador = encontrarOtroPaciente(pacientesU, listaUrgente, exclusionU, 1, bloqueActual);
+    iterador = encontrarPaciente(pacientesU, listaUrgente, exclusionU, 1, bloqueActual);
     
     if (iterador != -1){
         yaAgendo = true;
@@ -479,13 +486,13 @@ void GBJ::BT(doc* listaDoctores,
         listaUrgente[iterador].pilaEsperas.push_back(listaUrgente[iterador].tiempoEspera);
         listaUrgente[iterador].tiempoEspera = 0;
         listaUrgente[iterador].horarioDoc[bloqueActual] = listaDoctores[iddoc].id;
-        listaUrgente[iterador].horarioMaq[bloqueActual] = maquinasUsadas;
+        listaUrgente[iterador].horarioMaq[bloqueActual] = primeraMaquina;
         listaUrgente[iterador].cantidadSesionesActuales++;
         typoPaciente = 1;
     }
 
     //if ternario para darme color, paliativos
-    iterador = (iterador == -1) ? encontrarOtroPaciente(pacientesP, listaPaliativa, exclusionP, 2, bloqueActual) : iterador;
+    iterador = (iterador == -1) ? encontrarPaciente(pacientesP, listaPaliativa, exclusionP, 2, bloqueActual) : iterador;
     
     if (!yaAgendo && iterador != -1){
         yaAgendo = true;
@@ -494,13 +501,13 @@ void GBJ::BT(doc* listaDoctores,
         listaPaliativa[iterador].pilaEsperas.push_back(listaPaliativa[iterador].tiempoEspera);
         listaPaliativa[iterador].tiempoEspera = 0;
         listaPaliativa[iterador].horarioDoc[bloqueActual] = listaDoctores[iddoc].id;
-        listaPaliativa[iterador].horarioMaq[bloqueActual] = maquinasUsadas;
+        listaPaliativa[iterador].horarioMaq[bloqueActual] = primeraMaquina;
         listaPaliativa[iterador].cantidadSesionesActuales++;
         typoPaciente = 2;
     }
 
     //finalmente radicales
-    iterador = (iterador == -1) ? encontrarOtroPaciente(pacientesR, listaRadical, exclusionR, 3, bloqueActual) : iterador;
+    iterador = (iterador == -1) ? encontrarPaciente(pacientesR, listaRadical, exclusionR, 3, bloqueActual) : iterador;
     if (!yaAgendo && iterador != -1){
         yaAgendo = true;
 
@@ -508,7 +515,7 @@ void GBJ::BT(doc* listaDoctores,
         listaRadical[iterador].pilaEsperas.push_back(listaRadical[iterador].tiempoEspera);
         listaRadical[iterador].tiempoEspera = 0;
         listaRadical[iterador].horarioDoc[bloqueActual] = listaDoctores[iddoc].id;
-        listaRadical[iterador].horarioMaq[bloqueActual] = maquinasUsadas;
+        listaRadical[iterador].horarioMaq[bloqueActual] = primeraMaquina;
         listaRadical[iterador].cantidadSesionesActuales++;
         typoPaciente = 3;
     }
@@ -518,7 +525,7 @@ void GBJ::BT(doc* listaDoctores,
     while(yaAgendo){
         
         BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente, totalDoctores, pacientesR,
-            pacientesP, pacientesU, totalMaquinas, bloqueActual, doctoresUsados+1, maquinasUsadas+1);
+            pacientesP, pacientesU, totalMaquinas, bloqueActual, bloqueActual, doctoresUsados+1, primeraMaquina+1);
         //Agendamos a alguien en este bloque pero queda mas gente, por lo tanto es necesario
         //hace BT en el mismo bloque pero cambiando parametros, ahora cuando falle es necesario
         //que exista una manera de devolver los pasos, guardar algunos int o algo asi para poder devolver
@@ -537,38 +544,38 @@ void GBJ::BT(doc* listaDoctores,
         
         yaAgendo = false;
         //Copy paste
-        iterador = encontrarOtroPaciente(pacientesU, listaUrgente, exclusionU, 1, bloqueActual);
+        iterador = encontrarPaciente(pacientesU, listaUrgente, exclusionU, 1, bloqueActual);
         if (iterador != -1){
             yaAgendo = true;
 
             listaUrgente[iterador].pilaEsperas.push_back(listaUrgente[iterador].tiempoEspera);
             listaUrgente[iterador].tiempoEspera = 0;
             listaUrgente[iterador].horarioDoc[bloqueActual] = listaDoctores[iddoc].id;
-            listaUrgente[iterador].horarioMaq[bloqueActual] = maquinasUsadas;
+            listaUrgente[iterador].horarioMaq[bloqueActual] = primeraMaquina;
             listaUrgente[iterador].cantidadSesionesActuales++;
             typoPaciente = 1;
         }
 
-        iterador = (iterador == -1) ? encontrarOtroPaciente(pacientesP, listaPaliativa, exclusionP, 2, bloqueActual) : iterador;
+        iterador = (iterador == -1) ? encontrarPaciente(pacientesP, listaPaliativa, exclusionP, 2, bloqueActual) : iterador;
         if (!yaAgendo && iterador != -1){
             yaAgendo = true;
 
             listaPaliativa[iterador].pilaEsperas.push_back(listaPaliativa[iterador].tiempoEspera);
             listaPaliativa[iterador].tiempoEspera = 0;
             listaPaliativa[iterador].horarioDoc[bloqueActual] = listaDoctores[iddoc].id;
-            listaPaliativa[iterador].horarioMaq[bloqueActual] = maquinasUsadas;
+            listaPaliativa[iterador].horarioMaq[bloqueActual] = primeraMaquina;
             listaPaliativa[iterador].cantidadSesionesActuales++;
             typoPaciente = 2;
         }
 
-        iterador = (iterador == -1) ? encontrarOtroPaciente(pacientesR, listaRadical, exclusionR, 3, bloqueActual) : iterador;
+        iterador = (iterador == -1) ? encontrarPaciente(pacientesR, listaRadical, exclusionR, 3, bloqueActual) : iterador;
         if (!yaAgendo && iterador != -1){
             yaAgendo = true;
 
             listaRadical[iterador].pilaEsperas.push_back(listaRadical[iterador].tiempoEspera);
             listaRadical[iterador].tiempoEspera = 0;
             listaRadical[iterador].horarioDoc[bloqueActual] = listaDoctores[iddoc].id;
-            listaRadical[iterador].horarioMaq[bloqueActual] = maquinasUsadas;
+            listaRadical[iterador].horarioMaq[bloqueActual] = primeraMaquina;
             listaRadical[iterador].cantidadSesionesActuales++;
             typoPaciente = 3;
         }
@@ -581,7 +588,7 @@ void GBJ::BT(doc* listaDoctores,
 	}
 	
     BT(listaDoctores, listaRadical, listaPaliativa, listaUrgente, totalDoctores, pacientesR, pacientesP,
-    pacientesU, totalMaquinas, bloqueActual+1, 0, 1);
+    pacientesU, totalMaquinas, bloqueActual+1, bloqueAnterior, 0, 1);
     
     if (pasoDia){
         regresarDia(pacientesU, listaUrgente, pacientesP, listaPaliativa, pacientesR, listaRadical, bloqueActual);

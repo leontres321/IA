@@ -17,9 +17,6 @@ class GBJ{
     int sesionesP = 4;
     int sesionesU = 2;
 
-    int esperaAntigua = INT32_MAX;
-    int sesionesAntigua = 0;
-
     void pasarDia(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
                      paciente* listaRadical, int bloqueActual);
 
@@ -34,7 +31,7 @@ class GBJ{
     void solucion(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa,
                   int pacientesR, paciente* listaRadical);
 
-    int encontrarOtroPaciente(int cantidadPacientes, paciente* listaPaciente, std::vector<int> &excluidos, int typo, int bloqueActual);
+    int encontrarPaciente(int cantidadPacientes, paciente* listaPaciente, std::vector<int> &excluidos, int typo, int bloqueActual);
     void devolverHora(paciente* listaPacientes, int iterador, int bloqueActual, std::vector<int> &exclusiones);
     bool revisarDiasMaximos(int pacientesU, paciente* listaUrgente, int pacientesP, paciente* listaPaliativa, int pacientesR,
                      paciente* listaRadical);
@@ -46,6 +43,8 @@ class GBJ{
 
     public:
         //Esto es para minimizar tiempos de espera y maximizar cantidad de sesiones
+        int esperaAntigua = INT32_MAX;
+        int sesionesAntigua = 0;
         paciente* listaU;
         paciente* listaP;
         paciente* listaR;
@@ -55,7 +54,7 @@ class GBJ{
 
         void BT(doc* listaDoctores, paciente* listaRadical, paciente* listaPaliativa, paciente* listaUrgente
             ,int totalDoctores, int pacientesR, int pacientesP, int pacientesU, int totalMaquinas
-            ,int bloqueActual, int doctoresUsados, int maquinasUsadas);
+            ,int bloqueActual, int bloqueAnterior, int doctoresUsados, int primeraMaquina);
 
 };
 

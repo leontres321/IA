@@ -2,7 +2,7 @@ CC =g++
 FLAGS =-Wall
 
 FILES =main.o doctores.o pacientes.o GBJ.o
-OUTPUTS = doctores.txt maquinas.txt
+OUTPUTS =OUT
 BINARY =out
 
 all: $(BINARY)
@@ -23,7 +23,10 @@ GBJ.o: GBJ.cpp
 	$(CC) $(FLAGS) -c GBJ.cpp
 
 clean:
-	rm $(BINARY) $(FILES) $(OUTPUTS)
+	rm $(BINARY) $(FILES)
+
+delete:
+	rm -rf $(OUTPUTS)
 
 run:
-	@./out $(CASE)
+	@./$(BINARY) $(CASE)
